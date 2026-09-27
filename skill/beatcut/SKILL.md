@@ -18,7 +18,8 @@ If `beatcut` is not found, install it (needs git, Python 3.10+ and ffmpeg with l
 git clone https://github.com/AtharvaNikam/beatcut.git ~/beatcut && bash ~/beatcut/scripts/install.sh
 ```
 If the repo is already cloned somewhere, run its `scripts/install.sh` instead (ask the user where it lives).
-`~/.local/bin` must be on PATH; the installer says so if it isn't.
+`~/.local/bin` must be on PATH; the installer says so if it isn't. On Windows run the installer from Git Bash; it adds
+`~/.local/bin` to the user PATH, which only takes effect after Claude Code restarts — until then call `~/.local/bin/beatcut`.
 
 ## 1. Set up a project (one folder per client job — never inside the footage folder)
 ```bash
@@ -70,8 +71,10 @@ Shortcut: `beatcut run <project> [--preview] [--out NAME]` = analyze + draft + r
 `beatcut run <project> --edl mine.json` renders your hand-made cut without re-drafting (edl.json is left alone).
 
 ## 5. Deliver
-Send `renders/montage.mp4`. Report: story order, where the big hits land (drop time, light events), anything you
-couldn't do with the footage (e.g. "no clip actually shows the car moving — used a push-in on the reverse lamps"), and
+Send `renders/montage.mp4`. Extra jobs around the montage (captions or a logo on the finished file, compressing to a
+size limit, converting or trimming sources first) are ordinary edits: use the `video-editing` skill if it is installed,
+and never re-cut the montage itself outside beatcut. Report: story order, where the big hits land (drop time, light
+events), anything you couldn't do with the footage (e.g. "no clip actually shows the car moving — used a push-in on the reverse lamps"), and
 privacy items (readable number plates, faces of bystanders).
 
 ## Why the tool, not raw ffmpeg (bugs it already fixes)

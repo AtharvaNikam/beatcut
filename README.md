@@ -16,11 +16,17 @@ It works three ways:
 
 ## 1. Requirements
 
-| | macOS | Ubuntu / Debian | Windows |
+| | macOS | Ubuntu / Debian | Windows (native) |
 |---|---|---|---|
-| ffmpeg (with libx264) | `brew install ffmpeg` | `sudo apt install ffmpeg` | use WSL2 (Ubuntu), then the Linux column |
-| Python 3.10+ | `brew install python` | `sudo apt install python3 python3-venv` | ↑ |
-| git + rsync | preinstalled / `brew install git` | `sudo apt install git rsync` | ↑ |
+| ffmpeg (with libx264) | `brew install ffmpeg` | `sudo apt install ffmpeg` | `winget install Gyan.FFmpeg` |
+| Python 3.10+ | `brew install python` | `sudo apt install python3 python3-venv` | `winget install Python.Python.3.12` (or `uv python install 3.12`) |
+| git + rsync | preinstalled / `brew install git` | `sudo apt install git rsync` | `winget install Git.Git` (rsync not needed) |
+
+On Windows, run the install commands below from **Git Bash**. The installer picks the first working Python 3.10+
+(`PYTHON=/path/to/python.exe bash scripts/install.sh` to choose one), writes `beatcut` / `beatcut.cmd` shims to
+`~/.local/bin`, adds that folder to your user PATH, and installs the skill into `$CLAUDE_CONFIG_DIR/skills` when that
+variable is set (otherwise `~/.claude/skills`). Restart Claude Code afterwards so it sees the new PATH. WSL2 works too
+(use the Linux column).
 
 ## 2. Install on any device
 
