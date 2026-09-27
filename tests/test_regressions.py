@@ -222,6 +222,21 @@ def test_analyze_survives_tiny_and_broken_clips(media, tmp_path):
     assert "c_good.mp4" in names and "b_broken.mp4" not in names
 
 
+def test_non_ascii_clip_names_and_a_bom_edl(media, tmp_path):
+    foot = tmp_path / "f"
+    foot.mkdir()
+    name = "01 क्लिप ✓.mp4"  # outside every Windows ANSI codepage: analyze crashed writing brief.md there
+    (foot / name).write_bytes((media["footage"] / "a_walk.mp4").read_bytes())
+    root = tmp_path / "p"
+    assert main(["init", str(root), "--footage", str(foot), "--song", str(media["song"]), "--length", "5"]) == 0
+    assert main(["analyze", str(root)]) == 0
+    assert name in (root / "analysis/brief.md").read_text(encoding="utf-8")
+    assert main(["draft", str(root)]) == 0
+    edl = root / "edl.json"
+    edl.write_bytes(b"\xef\xbb\xbf" + edl.read_bytes())  # Notepad / PowerShell 5.1 save with a BOM
+    assert main(["validate", str(root)]) == 0
+
+
 # --- cli ------------------------------------------------------------------------------------------------------
 @pytest.mark.parametrize("target", ["project.json", "analysis/clips.json", "."])
 def test_draft_out_refuses_reserved_targets(proj, target):

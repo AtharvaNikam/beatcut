@@ -140,7 +140,7 @@ def render(shots: list[dict], clips: list[dict], beats: dict, proj, out: Path, p
     hts = [handles(shots, i, fps) for i in range(len(shots))]
     parts = [parts_dir / f"s{i:02d}.mp4" for i in range(len(shots))]
     keys = [dumps([shots[i], by_id[shots[i]["clip"]]["file"], fades[i], hts[i], cfg], sort_keys=True) for i in range(len(shots))]
-    fresh = [parts[i].exists() and parts[i].with_suffix(".key").is_file() and parts[i].with_suffix(".key").read_text() == keys[i]
+    fresh = [parts[i].exists() and parts[i].with_suffix(".key").is_file() and parts[i].with_suffix(".key").read_text(encoding="utf-8-sig") == keys[i]
              for i in range(len(shots))]
     todo = [i for i in range(len(shots)) if only is None or i in only or not fresh[i]]  # stale parts always re-render
     for i in todo:
@@ -150,7 +150,7 @@ def render(shots: list[dict], clips: list[dict], beats: dict, proj, out: Path, p
         futs = {i: ex.submit(render_shot, i, shots[i], by_id[shots[i]["clip"]], fades[i], *hts[i], cfg, parts[i]) for i in todo}
         for i in sorted(futs):
             futs[i].result()
-            parts[i].with_suffix(".key").write_text(keys[i])
+            parts[i].with_suffix(".key").write_text(keys[i], encoding="utf-8")
             s = shots[i]
             log(f"  shot {i:02d} {s['clip']} {s['start']:6.2f}-{s['end']:6.2f} x{s['speed']} {s['transition']['type']:4s} {','.join(s['fx'])}")
     total = sum(n_frames(s, fps) for s in shots)
@@ -180,5 +180,5 @@ def render(shots: list[dict], clips: list[dict], beats: dict, proj, out: Path, p
     os.replace(tmp, out)  # never leave a half-written montage behind
     manifest = {"video": str(out), "frames": total, "fps": fps, "width": W, "height": H, "preview": preview,
                 "grade": proj.grade, "shots": shots}
-    out.with_suffix(".json").write_text(dumps(manifest, indent=1))
+    out.with_suffix(".json").write_text(dumps(manifest, indent=1), encoding="utf-8")
     return manifest

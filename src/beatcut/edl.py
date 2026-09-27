@@ -79,7 +79,7 @@ def load(path: str | Path, total: float) -> list[dict]:
     if not p.is_file():
         raise EDLError(f"EDL not found: {p} — run `beatcut draft` or write one (see references/edl-format.md)")
     try:
-        return normalize(json.loads(p.read_text()), total)
+        return normalize(json.loads(p.read_text(encoding="utf-8-sig")), total)
     except json.JSONDecodeError as e:
         raise EDLError(f"{p} is not valid JSON: {e}") from e
 
@@ -97,7 +97,7 @@ def save(shots: list[dict], path: str | Path, meta: dict | None = None) -> None:
         if s.get("file"):
             d["file"] = s["file"]
         out.append(d)
-    Path(path).write_text(dumps({"version": 1, **(meta or {}), "shots": out}, indent=1))
+    Path(path).write_text(dumps({"version": 1, **(meta or {}), "shots": out}, indent=1), encoding="utf-8")
 
 
 # ---- frame math shared by validate / render / verify -------------------------------------------

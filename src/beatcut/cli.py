@@ -61,15 +61,15 @@ def cmd_analyze(a) -> int:
     total = p.total_length()
     bm = analyze_song(str(p.resolve(p.song)), p.song_start, total, bpm=a.bpm)
     p.analysis.mkdir(parents=True, exist_ok=True)
-    p.beats_path.write_text(dumps(bm, indent=1))
+    p.beats_path.write_text(dumps(bm, indent=1), encoding="utf-8")
     print(summary(bm).splitlines()[1] + (f" | drop {bm['drop']}s" if bm["drop"] else " | no drop"))
     clips = analyze_footage(str(p.resolve(p.footage)), p.sheets, exclude=p.exclude)
-    p.clips_path.write_text(dumps({"clips": clips}))
+    p.clips_path.write_text(dumps({"clips": clips}), encoding="utf-8")
     brief = [f"# beatcut brief — {p.root.name}", f"Montage: {total:.2f}s, {p.width}x{p.height} @ {p.fps} fps, grade {p.grade}",
              "", "## Song", summary(bm), "", "## Footage (story order = filename order)"]
     brief += [clip_brief(c) for c in clips]
     brief += ["", GUIDE.format(root=p.root)]
-    p.brief_path.write_text("\n".join(brief))
+    p.brief_path.write_text("\n".join(brief), encoding="utf-8")
     print(f"{len(clips)} clips analysed in {time.time() - t:.0f}s — read {p.brief_path} and the sheets in {p.sheets}")
     return 0
 
@@ -148,7 +148,7 @@ def cmd_verify(a) -> int:
         return 2
     man = video.with_suffix(".json")
     try:
-        m = json.loads(man.read_text()) if man.exists() else {}
+        m = json.loads(man.read_text(encoding="utf-8-sig")) if man.exists() else {}
     except json.JSONDecodeError:
         m = {}
     W, H = m.get("width", p.width), m.get("height", p.height)
@@ -241,6 +241,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI codepage; clip names can be any script
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     args = build_parser().parse_args(argv)
     if args.cmd == "run":
         args.video = None  # set by cmd_render to the file it actually wrote

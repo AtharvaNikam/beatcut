@@ -151,5 +151,5 @@ def verify(video: Path, shots: list[dict], beats: dict, clips: list[dict], fps: 
     if review_dir:
         rep["review_images"] = review_images(Path(video), shots, fps, review_dir, W, H)
     rep["status"] = "FAIL" if rep["fail"] else "WARN" if rep["warn"] else "PASS"
-    Path(video).with_suffix(".verify.json").write_text(dumps(rep, indent=1))
+    Path(video).with_suffix(".verify.json").write_text(dumps(rep, indent=1), encoding="utf-8")
     return rep

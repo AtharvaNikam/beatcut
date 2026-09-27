@@ -108,7 +108,7 @@ class Project:
         self.root.mkdir(parents=True, exist_ok=True)
         d = asdict(self)
         d.pop("root")
-        self.file.write_text(json.dumps(d, indent=2))
+        self.file.write_text(json.dumps(d, indent=2), encoding="utf-8")
 
     @classmethod
     def load(cls, root: str | Path) -> "Project":
@@ -116,7 +116,7 @@ class Project:
         f = root / "project.json"
         if not f.is_file():
             raise ProjectError(f"no project.json in {root} — run `beatcut init {root} --footage DIR --song FILE` first")
-        d = json.loads(f.read_text())
+        d = json.loads(f.read_text(encoding="utf-8-sig"))
         known = {k: d[k] for k in cls.__dataclass_fields__ if k in d and k != "root"}
         p = cls(root=root, **known)
         p.validate()
@@ -143,7 +143,7 @@ class Project:
 def load_json(path: Path, what: str) -> dict:
     if not path.is_file():
         raise ProjectError(f"{what} missing ({path}) — run `beatcut analyze` first")
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def dumps(obj, **kw) -> str:
