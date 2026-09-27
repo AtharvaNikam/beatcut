@@ -22,9 +22,6 @@ It works three ways:
 | Python 3.10+ | `brew install python` | `sudo apt install python3 python3-venv` | ↑ |
 | git + rsync | preinstalled / `brew install git` | `sudo apt install git rsync` | ↑ |
 
-This repository is **private**, so the device needs access to your GitHub account first. Either run
-`gh auth login` (GitHub CLI) or add the device's SSH key to GitHub.
-
 ## 2. Install on any device
 
 ```bash
