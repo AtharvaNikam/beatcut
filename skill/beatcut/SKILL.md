@@ -33,7 +33,7 @@ beatcut init ~/beatcut-jobs/<client>-<date> --footage "<clips folder>" --song "<
   song_start/length/grade) after `analyze` once you know where the drop is.
 - `--song-start/--length`: use the best 15–30 s section of the song (the drop inside it).
 - `--grade night` = moody teal/warm night look (cars, city at night); `natural` for daylight; `none` to keep source colours.
-- **Choosing the song:** if the user gave no song, or asks for a trending/suitable one, use the sibling skill
+- **Choosing the song:** if the user gave no song, or asks for a trending/suitable one, use the sibling skill, if it is installed,
   `../trending-audio/` (next to this skill in the skills folder): read its `reference/beatcut-video-editing-workflow.md`
   and run `node "<skills>/trending-audio/scripts/pick-audio.mjs" ...` (e.g. `--list phonk` for car/gym, `--list film --region in`
   for Indian weddings, `--list bgm` for real estate, `--new` for rising tracks). Propose 2-3 tracks with the reason
@@ -77,7 +77,7 @@ Shortcut: `beatcut run <project> [--preview] [--out NAME]` = analyze + draft + r
 `beatcut run <project> --edl mine.json` renders your hand-made cut without re-drafting (edl.json is left alone).
 
 ## 5. Deliver
-Sound effects (whoosh on fade/whip, riser into the drop, impact on flash/punch) go on the finished render, timed from edl.json:
+If the trending-audio skill is installed, sound effects (whoosh on fade/whip, riser into the drop, impact on flash/punch) can go on the finished render, timed from edl.json:
 `node "<skills>/trending-audio/scripts/sfx-cues.mjs" <project>/edl.json --video <project>/renders/montage.mp4 --whoosh … --impact … --riser … [--run]`
 (video is stream-copied; details in trending-audio's workflow doc).
 Send `renders/montage.mp4`. Extra jobs around the montage (captions or a logo on the finished file, compressing to a
